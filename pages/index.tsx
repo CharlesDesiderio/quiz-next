@@ -4,117 +4,119 @@ import Card from './components/Card'
 import ResultAnswer from './components/ResultAnswer'
 import Results from './components/Results'
 
-const App = () => {
+import styles from './index.module.css'
 
+const App = () => {
+  
 const questionList = [
   {
-    question: 'Question 1',
+    question: 'In 1768, Captain James Cook set out to explore which ocean?',
     choices: {
-      a: '1a',
-      b: '1b',
-      c: '1c',
-      d: '1d'
+      a: 'Pacific Ocean',
+      b: 'Atlantic Ocean',
+      c: 'Indian Ocean',
+      d: 'Arctic Ocean'
     },
     correctAnswer: 'a',
     userGuess: ''
   },
   {
-    question: 'Question 2',
+    question: 'Which of the following disorders is the fear of being alone?',
     choices: {
-      a: '2a',
-      b: '2b',
-      c: '2c',
-      d: '2d'
+      a: 'Agoraphobia',
+      b: 'Aerophobia',
+      c: 'Acrophobia',
+      d: 'Arachnophobia'
+    },
+    correctAnswer: 'a',
+    userGuess: ''
+  },
+  {
+    question: 'What is the speed of sound?',
+    choices: {
+      a: '120 km/h',
+      b: '1,200 km/h',
+      c: '400 km/h',
+      d: '700 km/h'
     },
     correctAnswer: 'b',
     userGuess: ''
   },
   {
-    question: 'Question 3',
+    question: 'What do we call a newly hatched butterfly?',
     choices: {
-      a: 'a',
-      b: 'b',
-      c: 'c',
-      d: 'd'
+      a: 'A moth',
+      b: 'A butter',
+      c: 'A caterpillar',
+      d: 'A chrysalis'
     },
     correctAnswer: 'c',
     userGuess: ''
   },
   {
-    question: 'Question 4',
+    question: 'What is the main component of the sun?',
     choices: {
-      a: 'a',
-      b: 'b',
-      c: 'c',
-      d: 'd'
-    },
-    correctAnswer: 'd',
-    userGuess: ''
-  },
-  {
-    question: 'Question 5',
-    choices: {
-      a: 'a',
-      b: 'b',
-      c: 'c',
-      d: 'd'
-    },
-    correctAnswer: 'a',
-    userGuess: ''
-  },
-  {
-    question: 'Question 6',
-    choices: {
-      a: 'a',
-      b: 'b',
-      c: 'c',
-      d: 'd'
+      a: 'Liquid lava',
+      b: 'Gas',
+      c: 'Molten iron',
+      d: 'Rock'
     },
     correctAnswer: 'b',
     userGuess: ''
   },
   {
-    question: 'Question 7',
+    question: 'Which two months are named after Emperors of the Roman Empire?',
     choices: {
-      a: 'a',
-      b: 'b',
-      c: 'c',
-      d: 'd'
+      a: 'January and February',
+      b: 'March and April',
+      c: 'May and June',
+      d: 'July and August'
+    },
+    correctAnswer: 'd',
+    userGuess: ''
+  },
+  {
+    question: 'Which of the following animals can run the fastest?',
+    choices: {
+      a: 'Cheetah',
+      b: 'Leopard',
+      c: 'Tiger',
+      d: 'Lion'
+    },
+    correctAnswer: 'a',
+    userGuess: ''
+  },
+  {
+    question: 'Which of the following actors was the first one to play James Bond?',
+    choices: {
+      a: 'Timothy Dalton',
+      b: 'Roger Moore',
+      c: 'Sean Connery',
+      d: 'George Lazenby'
     },
     correctAnswer: 'c',
     userGuess: ''
   },
   {
-    question: 'Question 8',
+    question: 'In which country is Transylvania?',
     choices: {
-      a: 'a',
-      b: 'b',
-      c: 'c',
-      d: 'd'
-    },
-    correctAnswer: 'd',
-    userGuess: ''
-  },
-  {
-    question: 'Question 9',
-    choices: {
-      a: 'a',
-      b: 'b',
-      c: 'c',
-      d: 'd'
-    },
-    correctAnswer: 'a',
-    userGuess: ''
-  },
-  {
-    question: 'Question 10',
-    choices: {
-      a: 'a',
-      b: 'b',
-      c: 'c',
-      d: 'd'
+      a: 'Bulgaria',
+      b: 'Romania',
+      c: 'Croatia',
+      d: 'Serbia'
     },
     correctAnswer: 'b',
+    userGuess: ''
+  },
+  {
+    question: 'Which was the first film by Disney to be produced in colour?',
+    choices: {
+      a: 'Toy Story',
+      b: 'Sleeping Beauty',
+      c: 'Snow White and the Seven Dwarfs',
+      d: 'Cinderella'
+    },
+    correctAnswer: 'c',
     userGuess: ''
   }
 ]
@@ -150,11 +152,11 @@ const pickAnswer = (answer: string) => {
 }
 
   return (
-    <div>
+    <div className={styles.container}>
       {
         quizOver ? 
 
-        <div>
+        <div className={styles.results}>
         <Results data={questions} />
         {
           questions.map((question, i) => {
@@ -165,7 +167,7 @@ const pickAnswer = (answer: string) => {
 
       :
 
-      <div>
+      <div className={styles.question}>
       <Card question={questions[currentQuestion].question}>
         <AnswerChoice pickAnswer={pickAnswer} choices={questions[currentQuestion].choices} />
       </Card>

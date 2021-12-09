@@ -1,4 +1,4 @@
-
+import styles from './AnswerChoice.module.css'
 interface answerChoiceProps {
   choices: {
     a: string
@@ -12,7 +12,7 @@ interface answerChoiceProps {
 const AnswerChoice = ({ choices, pickAnswer }: answerChoiceProps) => {
 
   return (
-    <div>
+    <div className={styles.choiceList}>
       <div onClick={() => pickAnswer('a')}>{choices.a}</div>
       <div onClick={() => pickAnswer('b')}>{choices.b}</div>
       <div onClick={() => pickAnswer('c')}>{choices.c}</div>

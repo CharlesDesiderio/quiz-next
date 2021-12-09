@@ -1,0 +1,21 @@
+
+.answers {
+  width: 90%;
+  margin: auto;
+  margin: 8px;
+  text-align: left;
+}
+
+.thisAnswer {
+  padding: 8px 12px;
+  background-color: #E3E3E3;
+  border-radius: 10px;
+}
+
+.rightAnswer, .wrongAnswer {
+  padding: 8px 12px;
+  margin: 4px;
+  background-color: darkblue;
+  color: white;
+}
+

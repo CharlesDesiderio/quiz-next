@@ -1,3 +1,5 @@
+import styles from './Card.module.css'
+
 interface cardProps {
   question: string
   children: React.ReactChild
@@ -5,8 +7,8 @@ interface cardProps {
 
 const Card = ({ question, children }: cardProps) => {
   return (
-    <div>
-      {question}
+    <div className={styles.card}>
+      <h3>{question}</h3>
       {children}
     </div>
   )

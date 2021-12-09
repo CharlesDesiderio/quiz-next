@@ -20,7 +20,7 @@ const Results = ({ data }: resultsProps) => {
 
   return (
     <div>
-      You got {numberCorrect.length} out of {data.length} right!
+      You got {numberCorrect.length} out of {data.length} correct!
     </div>
   )
 }

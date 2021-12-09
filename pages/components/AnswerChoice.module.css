@@ -1,0 +1,18 @@
+.choiceList {
+  margin: auto;
+  width: 90%;
+}
+
+.choiceList div {
+  margin: 8px auto;
+  padding: 8px 12px;
+  width: 90%;
+  background-color: darkblue;
+  color: white;
+}
+
+.choiceList div:hover {
+  cursor: pointer;
+  background-color: lightblue;
+  color: black; 
+}
