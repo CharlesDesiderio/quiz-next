@@ -1,12 +1,17 @@
-import { useEffect, useRef, useState } from 'react'
+import { Key, useEffect, useRef, useState } from 'react'
 import AnswerChoice from './components/AnswerChoice'
 import Card from './components/Card'
 import ResultAnswer from './components/ResultAnswer'
 import Results from './components/Results'
+// import clientPromise from '../lib/mongodb'
 
 import styles from './index.module.css'
 
-const App = () => {
+interface appProps {
+  isConnected: boolean
+}
+
+const App = ({ isConnected }: appProps) => {
   
 const questionList = [
   {
@@ -123,46 +128,121 @@ const questionList = [
 
 // Randomly pick 5 questions to be in the game.
 const pickQuestions = () => {
-  let allQuestions = questionList
-  let pickedQuestions = []
-  for (let i = 0; i < 5; i++) {
-    let choice = Math.floor(Math.random() * (questionList.length))
-    pickedQuestions.push(allQuestions[choice])
-    allQuestions.splice(choice, 1)
-  }
-  return pickedQuestions
+
+    let allQuestions = questionList
+    let pickedQuestions = []
+    for (let i = 0; i < 5; i++) {
+      let choice = Math.floor(Math.random() * (questionList.length))
+      pickedQuestions.push(allQuestions[choice])
+      allQuestions.splice(choice, 1)
+    }
+
+    if (typeof window !== "undefined") {
+      if (window.localStorage.getItem('marbleQuiz')) {
+        return JSON.parse(window.localStorage.getItem('marbleQuiz')!).questions
+      } else {
+        return pickedQuestions
+      }
+    } else {
+      return pickedQuestions
+    }
 }
 
 let initialState = pickQuestions()
+let initialQuestion = 0
+
+if (typeof window !== "undefined") {
+  if (window.localStorage.getItem('marbleQuiz'))   {
+    initialQuestion = JSON.parse(window.localStorage.getItem('marbleQuiz')!).currentQuestion
+  }
+}
+
+let initialTimestamp = Date.now()
+if (typeof window !== "undefined") {
+  if (window.localStorage.getItem('marbleQuiz'))   {
+    initialTimestamp = JSON.parse(window.localStorage.getItem('marbleQuiz')!).gameId
+  }
+}
 
 const [questions, setQuestions] = useState(initialState)
-const [currentQuestion, setCurrentQuestion] = useState(0)
+const [currentQuestion, setCurrentQuestion] = useState(initialQuestion)
 const [quizOver, setQuizOver] = useState(false)
+const [gameId, setGameId] = useState(initialTimestamp)
+const [dbQuestions, setDbQuestions] = useState([])
+
+const newQuiz = () => {
+  setQuestions(pickQuestions())
+  setCurrentQuestion(0)
+  setQuizOver(false)
+  setGameId(Date.now())
+}
+
+const getResults = async () => {
+  const response = await fetch('/api/getResults', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ game: gameId})
+  })
+  .then((res) => {
+    return res.json()
+  })
+  .then(data => setDbQuestions(data.questions))
+}
 
 const pickAnswer = (answer: string) => {
-  console.log(currentQuestion)
-  let newQuestions = questions
+  
+  let localData = { questions, currentQuestion, quizOver, gameId }
+
+  window.localStorage.setItem("marbleQuiz", JSON.stringify(localData))
+
+updateDatabase()
+
+  let newQuestions = questions!
   newQuestions[currentQuestion].userGuess = answer
   setQuestions([...newQuestions])
-  if (currentQuestion < questions.length - 1) {
+  if (currentQuestion < questions!.length - 1) {
     setCurrentQuestion(currentQuestion + 1)
   } else {
     setQuizOver(true)
+
+    // Send all data to back end with gameID here
+    updateDatabase()    
+
+    getResults()
+
+    if (typeof window !== "undefined") {
+      window.localStorage.removeItem("marbleQuiz")
+    }
   }
+}
+
+const updateDatabase = async () => {
+  const response = await fetch('/api/saveQuestion', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ game: gameId, questionNumber: currentQuestion, questions: questions })
+  })
+  // const data = await response.json()
 }
 
   return (
     <div className={styles.container}>
+      <div className={styles.connection}>{ isConnected ? 'DB ✅' : 'DB ❌' }</div>
       {
         quizOver ? 
 
         <div className={styles.results}>
-        <Results data={questions} />
+        <Results data={dbQuestions} />
         {
-          questions.map((question, i) => {
+          questions.map((question: { question: string; choices: { a: string; b: string; c: string; d: string }; correctAnswer: string; userGuess: string }, i: number) => {
             return <ResultAnswer key={i} question={question} i={i} />
           })
         }
+        <button onClick={newQuiz}>New Quiz</button>
       </div>
 
       :
@@ -179,3 +259,22 @@ const pickAnswer = (answer: string) => {
 }
 
 export default App
+
+export async function getServerSideProps() {
+  try {
+    // client.db() will be the default database passed in the MONGODB_URI
+    // You can change the database by calling the client.db() function and specifying a database like:
+    // const db = client.db("myDatabase");
+    // Then you can execute queries against your database like so:
+    // db.find({}) or any of the MongoDB Node Driver commands
+    // await clientPromise
+    return {
+      props: { isConnected: true },
+    }
+  } catch (e) {
+    console.error(e)
+    return {
+      props: { isConnected: false },
+    }
+  }
+}

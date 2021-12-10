@@ -1,4 +1,7 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter&display=swap');
+
 .container {
+  font-family: 'Inter', sans-serif;
   margin-top: 4rem;
   width: 100vw;
   height: 80vh;
@@ -22,4 +25,10 @@
 .results {
   padding: 8px 12px;
   height: auto;
+}
+
+.connection {
+  position: absolute;
+  top: 0;
+  left: 0;
 }
